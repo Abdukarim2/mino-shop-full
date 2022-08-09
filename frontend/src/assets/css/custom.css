@@ -1,0 +1,101 @@
+/**** CUSTOM STYLES  ****/
+
+html{scroll-behavior: smooth;}
+
+body{
+     width:100%;
+     height:auto;
+     background-color:#f8eeee;
+     overflow-x: hidden;
+     }
+
+*{box-sizing: border-box;}
+
+body,header,main,footer,section,div{width:100%; height:auto;}
+
+body,h1,h2,h3,h4,h5,h6,p,section,div{margin:0 ; padding:0;}
+
+button,input,select{outline:none; cursor: pointer;}
+
+a{
+  cursor: pointer; 
+  text-decoration: none;
+  color: inherit;
+  }
+
+ul,li{
+      margin:0; 
+      padding:0; 
+      list-style: none;
+      }
+
+input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+body::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Handle */
+body::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+body::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+@font-face {
+    font-family:'poppins';
+    src: url(../font/Poppins-Regular.ttf);
+    font-display: swap;
+}
+
+@font-face {
+    font-family:'poppins-bold';
+    src: url(../font/Poppins-SemiBold.ttf);
+    font-display: swap;
+}
+
+@font-face {
+    font-family:'poppins-bolder';
+    src: url(../font/Poppins-Bold.ttf);
+    font-display: swap;
+}
+
+.container_lg{
+              width: 100%; 
+              padding-left: 15px; 
+              padding-right: 15px; 
+              margin-left: auto;
+              margin-right: auto; 
+              height: auto; 
+              }
+
+
+/* start min-960 */
+@media(min-width:992px){
+  .container_lg{max-width: 990px;}
+}
+/* end min-960 */
+
+/* start min-1200 */
+@media(min-width:1200px){
+  .container_lg{max-width: 1180px;}
+}
+/* end min-1200 */
+
+/* start min-1400 */
+@media(min-width:1400px){
+  .container_lg{max-width: 1370px;}
+}
+/* end min-1400 */
+
