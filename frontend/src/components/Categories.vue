@@ -4,7 +4,7 @@
 			<slot></slot>
 		  <div class="categories_blocks">
 		  	<div class="category_block" v-for="category in categories">
-		  	  <router-link :to="'products/'+category.id+'/'" class="cart_category">
+		  	  <router-link :to="'products/'+category.slug+'/'" class="cart_category">
 		  	  	<img :src="category.get_img_url" :alt="category.name">
 		  	  	<p>
 		  	  		{{category.name}}

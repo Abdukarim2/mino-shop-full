@@ -142,6 +142,7 @@ import Services from "@/components/Services.vue"
 import PayType from "@/components/GlobalUI/PayType.vue"
 import SocialMedias from "@/components/GlobalUI/SocialMedias.vue"
 import DomToImg from "@/assets/js/dom-to-img.js"
+ 
 export default{
 	name:"Design",
 	data(){

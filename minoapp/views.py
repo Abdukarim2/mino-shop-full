@@ -15,20 +15,20 @@ class CategoryList(APIView):
 
 class ProductByCategory(APIView):
     """Product list by category api"""
-    def get(self, request, category_id, format=None):
+    def get(self, request, category_slug, format=None):
         product = None
         if request.query_params.get('limit'):
             try:
                 limit = int(request.query_params.get('limit'))
                 product = Product.objects.select_related('category')\
-                    .prefetch_related("color", "size", "material").filter(category=category_id)\
+                    .prefetch_related("color", "size", "material").filter(category__slug=category_slug)\
                     .order_by("?")[0:limit]
             except Product.DoesNotExist:
                 return Response(status=status.HTTP_404_NOT_FOUND)
         else:
             try:
                 product = Product.objects.select_related('category') \
-                    .prefetch_related("color", "size", "material").filter(category=category_id).order_by("?")
+                    .prefetch_related("color", "size", "material").filter(category__slug=category_slug).order_by("?")
             except Product.DoesNotExist:
                 return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -60,9 +60,9 @@ class ProductList(APIView):
 
 class ProductDetail(APIView):
     """Product detail api"""
-    def get(self, request, id, format=None):
+    def get(self, request, slug, id, format=None):
         try:
-            product = Product.objects.select_related('category').prefetch_related("color", "size", "material").get(id=id)
+            product = Product.objects.select_related('category').prefetch_related("color", "size", "material").filter(slug=slug).get(id=id)
         except Product.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 

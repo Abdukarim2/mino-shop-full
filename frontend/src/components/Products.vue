@@ -5,9 +5,9 @@
 	  	<div class="products_blocks">	
 	  	  <div class="product_block" v-for="product in products">
 	  	  	<Product>
-	  	  	  <a>
-	  	  		<img :src="product.get_img_url" :alt="product.name">
-	  	  	  </a>
+	  	  	  <router-link :to="'/detail/'+product.slug+'/'+product.id + '#product'">
+	  	  		<img :src="product.get_img_url[0]" :alt="product.name">
+	  	  	  </router-link>
 	  	  	  <p>
 	  	  	  	<span>{{product.priceDolor}} $</span> - {{product.price}} uzs
 	  	  	  </p>
@@ -42,7 +42,7 @@ export default{
 		flex-wrap: wrap;
 	}
 	.product_block{
-		padding: 0px 10px;
+		padding: 10px;
 		max-width: 25%;
 	}
 	@media(max-width: 1200px){

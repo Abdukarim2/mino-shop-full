@@ -5,13 +5,13 @@
   	</div>
   	<div class="product_top_pr_items">
   	  <div class="product_top_pr_img">
-    	<a>
+    	<router-link :to="'/detail/'+product.slug+'/'+product.id+'#product'">
     	<!--   <picture>
 				 <source media="(min-width:1200px)" srcset="@/assets/img/t-shirst2.png">
 				 <img src="@/assets/img/t-shirt.png" >
 			  </picture> -->
-			  <img :src="product.get_img_url" :alt="product.name">
-    	</a>
+			  <img :src="Array(product.get_img_url)[0]" :alt="product.name">
+    	</router-link>
       </div>
       <div class="product_top_pr_about">
     	<div class="top_pr_price">

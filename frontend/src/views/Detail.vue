@@ -2,7 +2,7 @@
   <main>
     <section class="detail_page_section">
 	  <div class="container_lg">
-	  	<div class="detail_product_blocks" @dblclick="heart = !heart">
+	  	<div class="detail_product_blocks" @dblclick="heart = !heart" id="product">
 	  	 <span class="heart d_product_heart" @click="heart = !heart">
 			<svg v-if="heart" 
 			:class="{ heart_action: heart }" xmlns="http://www.w3.org/2000/svg"   fill="currentColor" viewBox="0 0 16 16">
@@ -19,7 +19,7 @@
 						  <source media="(min-width:768px)" srcset="@/assets/img/t-shirst2.png">
 						  <img src="@/assets/img/t-shirt.png" >
 				    </picture> -->
-				    <img :src="product.get_img_url" :alt="product.name">
+				    <img :src="Array(product.get_img_url)[0]" :alt="product.name">
 	  	  	</a>
 	  	  </div>
 	  	  <div class="detail_product_about">
@@ -98,20 +98,33 @@ export default{
 		Products,
 		Deliver
 	},
-	async mounted(){
-		let id = this.$route.params.id;
-		await axios.get(`api/products/detail/${id}/`)
-							 .then(response=>{
-							 		this.product = response.data
-							 })
-
-		this.$refs.about.innerHTML = this.product.about
-		this.$refs.about_mobile.innerHTML = this.product.about
+	watch: {
+		$route(val){
+			if(val.params.slug && val.params.id){
+				this.getDetail()
+			}
+		}
+	},
+	async beforeMount(){
+		this.getDetail()
 		await axios.get("api/products/get/?limit=4&random=True")
 				   .then(response =>{
 				   		this.products = response.data
 				   })
-	}
+	},
+	methods: {
+		async getDetail(){
+			let id = this.$route.params.id;
+			let slug = this.$route.params.slug;
+			await axios.get(`api/products/detail/${slug}/${id}/`)
+								.then(response=>{
+										this.product = response.data
+								})
+
+			this.$refs.about.innerHTML = this.product.about
+			this.$refs.about_mobile.innerHTML = this.product.about
+		}
+	},
 }
 </script>
 <style>
