@@ -34,11 +34,12 @@
 	  	  	  </p>
 	  	  	</div>
 	  	  	<div class="d_product_condition">
-	  	  	  <p>
-	  	  	  	<b>Material :</b> paxta 80%, poliester 20%, 
+	  	  	  <p v-if="product.material">
+	  	  	  	<b>Material :</b> 
+				<span v-for="material in product.material">{{' '+materials[material-1]+' '}}</span>
 	  	  	  </p>
 	  	  	  <p>
-	  	  	  	<b> Omborda :</b> mavjud. (11 ta qoldi)
+	  	  	  	<b> Omborda :</b> mavjud. ({{Math.ceil(Math.random() * (15 - 3) + 3)}} ta qoldi)
 	  	  	  </p>
 	  	  	</div>
 	  	  	<div class="d_product_about">
@@ -91,7 +92,8 @@ export default{
 		return {
 			heart:true,
 			product:{},
-			products:[]
+			products:[],
+			materials:['Paxta', 'Sintetika', 'Boshqa'],
 		}
 	},
 	components:{
