@@ -5,12 +5,8 @@
   	</div>
   	<div class="product_top_pr_items">
   	  <div class="product_top_pr_img">
-    	<router-link :to="'/detail/'+product.slug+'/'+product.id+'#product'">
-    	<!--   <picture>
-				 <source media="(min-width:1200px)" srcset="@/assets/img/t-shirst2.png">
-				 <img src="@/assets/img/t-shirt.png" >
-			  </picture> -->
-			  <img :src="Array(product.get_img_url)[0]" :alt="product.name">
+    	<router-link :to="'/products/detail/'+product.slug+'/'+product.id+'#product'">
+			<img :src="Array(product.get_img_url)[0]" :alt="product.name">
     	</router-link>
       </div>
       <div class="product_top_pr_about">
@@ -20,13 +16,13 @@
     	  </p>
     	</div>
     	<div class="top_pr_about">
-    	  <p ref="productAbout"></p>
+    	  <p v-html="product.about.slice(0,120) + '...'"></p>
     	</div>
     	<div class="ptop_pr_condition">
-    	  <p><b>Omborda</b>: mavjud. (11 ta qoldi)</p>
+    	  <p><b>Omborda</b>: mavjud. ({{onWarehouse}} ta qoldi)</p>
     	</div>
     	<div class="top_pr_btn">
-    	  <a>
+    	  <a @click="addToCart">
     	  	<svg xmlns="http://www.w3.org/2000/svg"  fill="currentColor" class="bi bi-cart2" viewBox="0 0 16 16">
 								    <path d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5zM3.14 5l1.25 5h8.22l1.25-5H3.14zM5 13a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0zm9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0z"/>
 					</svg>
@@ -38,15 +34,30 @@
   </div>
 </template>
 <script>
+import {mapMutations} from "vuex"
+
+//addToCart
 export default{
 	name:"TopProduct",
+	data() {
+		return {
+			onWarehouse:null
+		}
+	},
 	props:{
 		product:{
 			type:Object,
 		}
 	},
-	mounted(){
-		this.$refs.productAbout.innerHTML = this.product.about.slice(0,120) + "..."
+	beforeMount() {
+		this.onWarehouse = Math.ceil(Math.random() * (15 - 3) + 3)
+	},
+	methods:{
+		...mapMutations(['ADD_TO_CART', 'NOTIFICATION']),
+		addToCart(){
+			this.ADD_TO_CART(this.product)
+			this.NOTIFICATION("Muvofaqiyatlik qo'shildi!")
+		}
 	}
 }
 </script>

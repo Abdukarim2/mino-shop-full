@@ -2,24 +2,20 @@
   <main>
     <section class="detail_page_section">
 	  <div class="container_lg">
-	  	<div class="detail_product_blocks" @dblclick="heart = !heart" id="product">
-	  	 <span class="heart d_product_heart" @click="heart = !heart">
-			<svg v-if="heart" 
-			:class="{ heart_action: heart }" xmlns="http://www.w3.org/2000/svg"   fill="currentColor" viewBox="0 0 16 16">
+	  	<div class="detail_product_blocks" @dblclick="addLiked" id="product">
+	  	 <span class="heart d_product_heart" @click="addLiked">
+			<svg v-if="!heart" 
+			:class="{ heart_action: !heart }" xmlns="http://www.w3.org/2000/svg"   fill="currentColor" viewBox="0 0 16 16">
 				  <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>
 			</svg>
-			<svg v-else :class="{ heart_action: !heart }" xmlns="http://www.w3.org/2000/svg"   fill="red" viewBox="0 0 16 16">
+			<svg v-else :class="{ heart_action: heart }" xmlns="http://www.w3.org/2000/svg"   fill="red" viewBox="0 0 16 16">
 			  <path 
 			  d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z" />
 			</svg>
 		  </span>
 	  	  <div class="detail_product_img">
 	  	  	<a>
-	  	  	  <!-- <picture>
-						  <source media="(min-width:768px)" srcset="@/assets/img/t-shirst2.png">
-						  <img src="@/assets/img/t-shirt.png" >
-				    </picture> -->
-				    <img :src="Array(product.get_img_url)[0]" :alt="product.name">
+				<img :src="Array(product.get_img_url)[0]" :alt="product.name">
 	  	  	</a>
 	  	  </div>
 	  	  <div class="detail_product_about">
@@ -34,22 +30,22 @@
 	  	  	  </p>
 	  	  	</div>
 	  	  	<div class="d_product_condition">
-	  	  	  <p v-if="product.material">
+	  	  	  <p v-if="Array(product.material).length > 0">
 	  	  	  	<b>Material :</b> 
 				<span v-for="material in product.material">{{' '+materials[material-1]+' '}}</span>
 	  	  	  </p>
 	  	  	  <p>
-	  	  	  	<b> Omborda :</b> mavjud. ({{Math.ceil(Math.random() * (15 - 3) + 3)}} ta qoldi)
+	  	  	  	<b> Omborda :</b> mavjud. ({{onWarehouse}} ta qoldi)
 	  	  	  </p>
 	  	  	</div>
 	  	  	<div class="d_product_about">
 	  	  	  <p>Tovar haqida :</p>
-	  	  	  <p ref="about">
-	  	  	  	{{product.about}}
+	  	  	  <p v-html="product.about">
+	  	
 	  	  	  </p>
 	  	  	</div>
 	  	  	<div class="d_product_btn">
-	  	  	  <a>
+	  	  	  <a @click="addTocart">
 	  	  	  	<span>
 	  	  	  	  <svg xmlns="http://www.w3.org/2000/svg"  fill="currentColor" class="bi bi-cart2" viewBox="0 0 16 16">
 						    <path d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5zM3.14 5l1.25 5h8.22l1.25-5H3.14zM5 13a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0zm9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0z"/>
@@ -61,7 +57,7 @@
 	  	  </div>
 	  	  <div class="d_product_about about_product_mobile">
 	  	    <p>Tovar haqida :</p>
-  	  	    <p ref="about_mobile">
+  	  	    <p v-html="product.about">
   	  	  	 
   	  	    </p>
   	  	  </div>
@@ -86,14 +82,16 @@
 import Products from "@/components/Products.vue"
 import Deliver from "@/components/GlobalUI/Deliver.vue"
 import axios from "axios"
+import { mapMutations } from "vuex"
 export default{
 	name:"Detail",
 	data(){
 		return {
-			heart:true,
+			heart:false,
 			product:{},
 			products:[],
 			materials:['Paxta', 'Sintetika', 'Boshqa'],
+			onWarehouse:null
 		}
 	},
 	components:{
@@ -111,8 +109,10 @@ export default{
 		this.getDetail()
 		await axios.get("api/products/get/?limit=4&random=True")
 				   .then(response =>{
-				   		this.products = response.data
+				   		this
+						.products = response.data
 				   })
+		this.onWarehouse = Math.ceil(Math.random() * (15 - 3) + 3)
 	},
 	methods: {
 		async getDetail(){
@@ -123,9 +123,23 @@ export default{
 										this.product = response.data
 								})
 
-			this.$refs.about.innerHTML = this.product.about
-			this.$refs.about_mobile.innerHTML = this.product.about
+		},
+		...mapMutations(['ADD_TO_CART', 'NOTIFICATION','ADD_LIKED','REMOVE_LIKED']),
+		addTocart(){
+			this.ADD_TO_CART(this.product)
+			this.NOTIFICATION("Muvofaqiyatlik qo'shildi!")
+		},
+		addLiked(){
+			if(!this.heart){
+				this.ADD_LIKED(this.product)
+				this.NOTIFICATION("Muvofaqiyatlik qo'shildi!")
+			}
+			if(this.heart){
+				this.REMOVE_LIKED(this.product)
+			}
+			this.heart = !this.heart
 		}
+		
 	},
 }
 </script>

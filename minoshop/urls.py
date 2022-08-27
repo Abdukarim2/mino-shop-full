@@ -6,6 +6,7 @@ from django.conf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include("minoapp.urls")),
+    path('management/', include("management.urls")),
     path('__debug__/', include('debug_toolbar.urls')),
 
 ]

@@ -6,6 +6,7 @@ import Cart from '@/views/Cart.vue'
 import Design from '@/views/Design.vue'
 import Order from '@/views/Order.vue'
 import Success from '@/views/Success.vue'
+import Liked from "@/views/Liked.vue"
 
 
 const routes = [
@@ -15,34 +16,39 @@ const routes = [
     component: Home
   },
   {
-    path:'/products/:by',
+    path:'/products/:by/',
     name:'products',
     component:Products
   },
   {
-    path: '/detail/:slug/:id/',
+    path: '/products/detail/:slug/:id/',
     name: 'detail',
     component: Detail
   },
   {
-    path: '/cart',
+    path: '/cart/',
     name: 'cart',
     component: Cart
   },
   {
-    path: '/design',
+    path: '/design/:item',
     name: 'design',
     component: Design
   },
   {
-    path: '/order',
+    path: '/order/',
     name: 'order',
     component: Order
   },
   {
-    path: '/success',
+    path: '/success/',
     name: 'success',
     component: Success
+  },
+  {
+    path:"/products/liked/",
+    name:"liked",
+    component:Liked
   }
 ]
 

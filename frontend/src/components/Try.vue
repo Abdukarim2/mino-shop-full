@@ -12,9 +12,9 @@
 	  	  			Boshlanish narxi 63.000 uzs
 	  	  		</p>
 	  	  		<div class="try_btn_field">
-	  	  			<a>
+	  	  			<router-link to="/design/t-shirt">
 	  	  				Sinab ko’rish
-	  	  			</a>
+	  	  			</router-link>
 	  	  		</div>
 	  	  	  </div>
 	  	  	  <div class="try_image_field">
@@ -34,9 +34,9 @@
 	  	  			Boshlanish narxi 63.000 uzs
 	  	  		</p>
 	  	  		<div class="try_btn_field">
-	  	  			<a>
+	  	  			<router-link to="/design/mug">
 	  	  				Sinab ko’rish
-	  	  			</a>
+	  	  			</router-link>
 	  	  		</div>
 	  	  	  </div>
 	  	  	  <div class="try_image_field">
@@ -51,7 +51,9 @@
   </section>
 </template>
 <script>
-	
+export default {
+	name:"Try"
+}
 </script>
 <style>
 	.try_fields{

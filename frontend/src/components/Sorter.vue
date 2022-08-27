@@ -9,8 +9,8 @@
 				<div class="sorted_products">
 					<TransitionGroup name="filter">
 						<div class="srted_product" v-for="product in filterProduct" :key="product.id">
-							<Product>
-								<router-link :to="'/detail/' + product.slug + '/' + product.id + '#product'">
+							<Product :product="product">
+								<router-link :to="'/products/detail/' + product.slug + '/' + product.id + '#product'">
 									<img :src="Array(product.get_img_url)[0]" :alt="product.name">
 								</router-link>
 								<p>
@@ -276,7 +276,10 @@ export default {
 				this.filterProduct = this.products.filter( e => e.material.includes(val))
 			}
 			else{
-				this.filterProduct = this.products.filter( e => !e.material.includes(val))
+				this.filterProduct = this.products
+			}
+			if(!this.btn){
+				this.$router.push({hash:"#products"})
 			}
 		},
 		filterByColor(color){

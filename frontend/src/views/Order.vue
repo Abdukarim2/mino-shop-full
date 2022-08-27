@@ -5,67 +5,69 @@
   	  	<div class="view_title">
 	  	  <p>Buyurtma berish</p>
 	  	</div>
-  	  	<div class="order_blocks">
+  	  	<div class="order_blocks" v-if="getAllProducts.length > 0">
   	  	  <div class="order_form">
   	  	  	<div class="order_form_block">
   	  	  	  <div class="order_title">
 			  	<p>Buyurtma berish formasi</p>
 			  </div>
-  	  	  	  <form>
+  	  	  	  <form @submit.prevent="sendOrder">
 			    <div class="inputs_blocks">
 			      <div class="inpu_block">
 			        <MinoInput>
-					  <input type="text" placeholder="Ism">
+					  <input type="text" placeholder="Ism" v-model="order.name" required>
 					</MinoInput>
 			       </div>	
 			       <div class="inpu_block">
 			       <MinoInput>
-				     <input type="text" placeholder="Familiya">
+				     <input type="text" placeholder="Familiya" v-model="order.surname" required>
 				   </MinoInput>
 			      </div>
 			    </div>
 			    <div class="inputs_blocks">
 			      <div class="inpu_block">
 			        <MinoInput>
-					  <input type="text" placeholder="Pochta">
+					  <input type="text" placeholder="Pochta" v-model="order.email" required>
 					</MinoInput>
 			      </div>	
 			    </div>
 			    <div class="inputs_blocks">
 			      <div class="inpu_block">
 			        <MinoInput>
-					  <input type="text" placeholder="Pochta">
+					  <input type="text" placeholder="Manzil" v-model="order.location" required>
 					</MinoInput>
 			      </div>	
 			    </div>
 			    <div class="inputs_blocks">
 			      <div class="inpu_block">
 			        <MinoInput>
-					  <input type="number" placeholder="Telefon">
+					  <input type="number" placeholder="Telefon" v-model="order.phone_number" required>
 					</MinoInput>
 			       </div>	
 			       <div class="inpu_block">
 			       <MinoInput>
-				     <input type="number" placeholder="Pochta indeksi">
+				     <input type="number" placeholder="Pochta indeksi" v-model="order.index" >
 				   </MinoInput>
 			      </div>
 			    </div>
 			    <div class="inputs_blocks">
 			      <div class="inpu_block">
-			        <MinoInput>
-					  <select>
-					  	<option>To’lov turi</option>
+			        <MinoInput>	
+					  <select required  @change="order.pay_type = $event.target.value">
+						<option value="" selected disabled hidden>To'lov turi</option>
+						<option value="Payme">Payme</option>
+						<option value="Apelsin">Apelsin</option>
 					  </select>
 					</MinoInput>
 			       </div>	
 			       <div class="inpu_block">
 			       <MinoInput>
-				     <input type="text" placeholder="Kupon (agar bo’lsa)">
+				     <input type="text" placeholder="Kupon (agar bo’lsa)" v-model="order.coupon">
 				   </MinoInput>
 			      </div>
 			    </div>
 			    <div class="order_form_submit">
-			       <a>
+			       <button type="submit">
 			       	 <span>
 			       	 	<svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 40 40" fill="none">
 						<path d="M20 23.3333H21.6667C23.5 23.3333 25 21.8333 25 20V3.33334H10C7.5 3.33334 5.31668 4.71665 4.18335 6.74998" stroke="#404143" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -79,7 +81,7 @@
 						</svg>
 			       	 </span>
 			       	 <span>Habarni yuborish</span>
-			       </a>
+			       </button>
 			    </div>
 		      </form>
   	  	  	</div>
@@ -87,15 +89,20 @@
   	  	  <div class="order_right_bar">
   	  		<OrderTotal>
   	  		  <ul>
-			  	<li>Tovarlar soni : 2 ta </li>
-			  	<li>Umumiy summa : $15 - 162.000 uzs</li>
+			  	<li>Tovarlar soni : {{getAllProducts.length}} ta </li>
+			  	<li>Umumiy summa : ${{getTotalPrice[0]}} - {{getTotalPrice[1]}} uzs</li>
 			  	<li>Yetkazib berish : Bepul</li>
-			  	<li>Chegirma bilan : 155.000 uzs</li>
+			  	<li>Chegirma bilan : {{getTotalPrice[1]}} uzs</li>
 			  </ul>
   	  		</OrderTotal>
   	  		<PayType/>
   	  	  </div>
   	  	</div>
+		<div style="width:100%; height:60vh; display:flex; align-items: center; text-align: center;"  v-else>
+			<div class="view_title">
+				<p>Savatchangiz bo'sh</p>
+			</div>
+		</div>
   	  </div>
   	  <!-- start Services -->
 	  <Services/>
@@ -106,12 +113,55 @@
 import OrderTotal from "@/components/GlobalUI/OrderTotal.vue"
 import PayType from "@/components/GlobalUI/PayType.vue"
 import Services from "@/components/Services.vue"
+import axios from "axios"
+import { mapGetters, mapMutations } from "vuex"
 export default{
 	name:"Order",
+	data() {
+		return {
+			order: {
+				name:null,
+				surname:null,
+				email:null,
+				location:null,
+				phone_number:null,
+				index:null,
+				pay_type:null,
+				coupon:'',
+				products:[]
+			}
+		}
+	},
 	components:{
 		OrderTotal,
 		PayType,
 		Services
+	},
+	beforeMount() {
+		for (let item of this.getAllProducts){
+			this.order.products.push(
+				JSON.stringify({id:item.id,color:item.color, size:item.size, quantiy:item.quantiy})
+			)
+		}
+	},
+	computed: {
+		...mapGetters(['getAllProducts']),
+		...mapGetters(['getTotalPrice'])
+	},
+	methods:{
+		async sendOrder(){
+			await axios.post("management/order/", JSON.stringify(this.order),
+				{
+					headers: {
+					'Content-Type': 'application/json'
+					}
+				}
+
+			)
+			.then(reponse=>{
+				console.log(reponse.data)
+			})
+		}
 	}
 }
 </script>
@@ -141,18 +191,18 @@ export default{
   	font-size: 35px;
   	padding-bottom:15px;
   }
-  .order_form_submit a{
-  	display: block;
+  .order_form_submit button{
   	padding:10px;
   	border-radius: 10px;
   	background: #FFD600;
   	text-align: center;
-  	max-width: 350px;
+	width: 350px;
   	font-family: poppins-bolder;
   	font-size: 24px;
   	margin-top: 10px;
+	border: none;
   }
-  .order_form_submit a span svg{
+  .order_form_submit button span svg{
   	width: 30px;
   	transform: translateY(5px);
   	margin-right: 10px	;
@@ -198,11 +248,16 @@ export default{
 	  	width: 100%;
 	  	position: inherit;
 	 }
-	.order_form_submit a{
+	.order_form_submit button{
   		font-size: 22px;
   	}
   	.order_title{
   		font-size: 25px;
+	}
+  }
+  @media(max-width: 576px){
+	.order_form_submit button{
+		width: 100%;
 	}
   }
 </style> 

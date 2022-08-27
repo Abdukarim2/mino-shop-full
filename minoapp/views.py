@@ -6,7 +6,7 @@ from .models import Category, Product
 
 
 class CategoryList(APIView):
-    """List category"""
+    """List category api"""
     def get(self, request, format=None):
         categories = Category.objects.all()
         serializer = CategorySerializer(categories, many=True)
